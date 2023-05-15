@@ -7,6 +7,14 @@ import { Component } from '@angular/core';
 })
 export class Tab1Page {
 
-  constructor() {}
+  darkMode:boolean = false;
+
+  ngOnInit() {}
+
+
+
+  toggleTheme(e: any) {
+      document.body.classList.toggle('dark', e.detail.checked);
+  }
 
 }
