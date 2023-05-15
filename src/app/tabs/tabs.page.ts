@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class TabsPage {
 
+  toggleTheme(e: any) {
+    document.body.classList.toggle('dark', e.detail.checked);
+  }
+
 }
