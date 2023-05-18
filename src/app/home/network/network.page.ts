@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ConnectionStatus, Network } from '@capacitor/network';
+import { PluginListenerHandle } from '@capacitor/core';
 
 @Component({
   selector: 'app-network',
@@ -7,9 +9,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NetworkPage implements OnInit {
 
-  constructor() { }
+  networkListener!: PluginListenerHandle;
+  connectionStatus!: ConnectionStatus;
 
-  ngOnInit() {
+  constructor() {
   }
+
+ ngOnInit() {
+    if(Network) {
+      Network.getStatus().then(status => {
+        this.connectionStatus = status
+        console.log(status);
+      })
+    } else {
+      console.log('Nothing');
+    }
+    Network.addListener('networkStatusChange', status => {
+      this.connectionStatus = status;
+      console.log(status);
+    })
+  }
+
 
 }
