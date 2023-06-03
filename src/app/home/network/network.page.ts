@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { ConnectionStatus, Network } from '@capacitor/network';
 import { PluginListenerHandle } from '@capacitor/core';
 
@@ -8,26 +8,24 @@ import { PluginListenerHandle } from '@capacitor/core';
   styleUrls: ['./network.page.scss'],
 })
 export class NetworkPage implements OnInit {
-
   networkListener!: PluginListenerHandle;
-  connectionStatus!: ConnectionStatus;
+  status!: string;
 
-  constructor() {
-  }
 
- ngOnInit() {
-    if(Network) {
-      Network.getStatus().then(status => {
-        this.connectionStatus = status
-        console.log(status);
+  constructor(private ngZone: NgZone,
+              ) {}
+
+  async ngOnInit() {
+    this.networkListener = await Network.addListener('networkStatusChange', status => {
+      console.log('Network status changed', status);
+      // this.status = status;
+      this.ngZone.run((status) => {
+        this.status = status.connected ? 'Online' : 'Offline';
+        console.log(this.status);
       })
-    } else {
-      console.log('Nothing');
-    }
-    Network.addListener('networkStatusChange', status => {
-      this.connectionStatus = status;
-      console.log(status);
-    })
+    });
+    // this.status = await Network.getStatus();
+    console.log('Network status', this.status);
   }
 
 
